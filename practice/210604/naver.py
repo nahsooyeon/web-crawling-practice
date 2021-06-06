@@ -118,7 +118,7 @@ while True :
 
     #file.write(str(title) + "\t" + str(price) + "\t" + str(url) + "\n")
 
-        naver_macro.append({'title' : title , 'price' : price, 'url' : url }) #리스트 안에 딕셔너리 값 append
+        naver_macro.append({'상품명' : title , '가격' : price, 'URL' : url, '리뷰': review, '찜': zzim }) #리스트 안에 딕셔너리 값 append
 #
     next_btn = driver.find_element_by_class_name('pagination_next__1ITTf')
     next_btn.click()
@@ -128,9 +128,24 @@ while True :
     if page > 10 :
         break
 
+
 file.write(json.dumps(naver_macro))
 
 file.close()
 
 
 driver.quit()
+
+
+# pandas로 부르기, excel 저장
+
+import pandas as pd
+
+df = pd.read_json("/Users/devpomme/Desktop/네이버쇼핑매크로.json")
+for j in df:
+    print(j)
+print(df.count())
+
+writer = pd.ExcelWriter("/Users/devpomme/Desktop/네이버쇼핑매크로.xlsx")
+df.to_excel(writer, "sheet1")
+writer.save()
