@@ -2,6 +2,7 @@ import sys
 import io
 import time
 from selenium import webdriver
+from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
@@ -24,12 +25,20 @@ driver.implicitly_wait(2)
 
 driver.find_element_by_name('query').send_keys('운동화')
 
+
 driver.implicitly_wait(2)
+
 driver.find_element_by_xpath('//*[@id="autocompleteWrapper"]/a[2]').click()
 
+
 driver.implicitly_wait(2)
+print(driver.current_url)
 # 검색 후 리뷰 많은 순으로 정렬하기
+
 driver.find_element_by_xpath('//*[@id="__next"]/div/div[2]/div[2]/div[3]/div[1]/div[1]/div/div[1]/a[5]').click()
 
-driver.sleep(2)
+
 driver.implicitly_wait(2)
+print(driver.current_url)
+
+driver.quit()
