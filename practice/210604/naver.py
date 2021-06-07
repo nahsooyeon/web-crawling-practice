@@ -15,6 +15,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument('--log-level=3')
+
 driver = webdriver.Chrome(options=chrome_options, executable_path=r'/Users/devpomme/Desktop/chromedriver')
 # driver = webdriver.Chrome('/Users/devpomme/Desktop/development/web-crawling/python_create_app_1/section3/3-6(all)/chrome/chromedriver')
 
@@ -78,58 +79,64 @@ while True :
         title = metadata.a.get('title')
         if title != None :
             title = metadata.a.get('title')
-            print("<제품명> : ", title) # title
+            #print("<제품명> : ", title) # title
         elif title == None :
             title = metadata.a.get_text()
-            print("<제품명> : ", title)
+            #print("<제품명> : ", title)
 
     # 상품 URL
         url = metadata.a.get('href')
-        print("<url> : ", url)
+        #print("<url> : ", url)
     # 상품 가격
         metadata2 = soup.find_all('div', class_='basicList_price_area__1UXXR')[i]
         price = metadata2.find('span', class_='price_num__2WUXn')
         if price != None :
-            price = price.text
-            print("<가격> : ", price)
+            price = price.text.replace('원', '').strip()
+            price = int(price.replace(',','').strip())
+            #print("<가격> : ", price)
         elif price == None :
             price = price = metadata2.strong.get_text()
-            print("<가격> :", price)
+            #print("<가격> :", price)
     # 리뷰 수
         metadata3 = soup.find_all('div', class_='basicList_etc_box__1Jzg6')[i]
         review = metadata3.find('em', class_='basicList_num__1yXM9')
         if review != None :
-            review = review.text
-            print("<리뷰 수> : ", review)
+            review = int(review.text.replace(',', '').strip())
+            #print("<리뷰 수> : ", review)
         elif review == None :
             review = 0
-            print("<리뷰 수> : ", review )
+            #print("<리뷰 수> : ", review )
     # 찜 개수
         metadata4 = soup.find_all('button', class_='basicList_btn_zzim__2MGkM')[i]
         zzim = metadata4.find('em', class_='basicList_num__1yXM9')
 
         if zzim != None :
-            zzim = zzim.text
-            print("<찜 수> : ", zzim )
+            zzim = int(zzim.text.replace(',', '').strip())
+            #print("<찜 수> : ", zzim )
         elif zzim == None :
             zzim = 0
-            print("<찜 수> : ", zzim )
+            #print("<찜 수> : ", zzim )
     #print("===================================================")
 
     #file.write(str(title) + "\t" + str(price) + "\t" + str(url) + "\n")
 
         naver_macro.append({'상품명' : title , '가격' : price, 'URL' : url, '리뷰': review, '찜': zzim }) #리스트 안에 딕셔너리 값 append
 #
-    next_btn = driver.find_element_by_class_name('pagination_next__1ITTf')
-    next_btn.click()
+    if driver.find_elements_by_xpath('//*[@id="__next"]/div/div[2]/div[2]/div[3]/div[1]/div[3]/a'):
+        next_btn = driver.find_element_by_class_name('pagination_next__1ITTf')
+        next_btn.click()
+        print('다음 페이지를 크롤링합니다')
+    else:
+        print('크롤링을 종료합니다')
 #
     page += 1
 
     if page > 10 :
+        print(type(price), type(zzim), type(review))
         break
 
 
-file.write(json.dumps(naver_macro))
+file.write(json.dumps(naver_macro, ensure_ascii=False, indent=2))
 
 file.close()
 
@@ -142,9 +149,8 @@ driver.quit()
 import pandas as pd
 
 df = pd.read_json("/Users/devpomme/Desktop/네이버쇼핑매크로.json")
-for j in df:
-    print(j)
-print(df.count())
+# for j in df:
+#     print(j)
 
 writer = pd.ExcelWriter("/Users/devpomme/Desktop/네이버쇼핑매크로.xlsx")
 df.to_excel(writer, "sheet1")
