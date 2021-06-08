@@ -132,7 +132,6 @@ while True :
     page += 1
 
     if page > 10 :
-        print(type(price), type(zzim), type(review))
         break
 
 

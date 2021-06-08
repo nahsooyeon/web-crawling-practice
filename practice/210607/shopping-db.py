@@ -4,7 +4,7 @@ import datetime
 
 #MySQL Connection#데이터베이스 선택 연결
 
-conn = pymysql.connect(host='localhost', user='root', password='password', db='python_app1', charset='utf8')
+conn = pymysql.connect(host='localhost', user='root', password='Dmlansemf1!', db='python_app1', charset='utf8')
 
 #pymysql 버전 확인
 print('pymysql.version:',pymysql.__version__)
@@ -40,7 +40,8 @@ print('nowDatetime',nowDatetime)
 
 
 #테이블 생성(데이터 타입)
-
+c.execute("SET GLOBAL sql_mode = 'NO_ENGINE_SUBSTITUTION'")
+c.execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'")
 c.execute("CREATE TABLE IF NOT EXISTS shopping(product longtext NOT NULL, \
                                                price bigint(20) NOT NULL, \
                                                url VARCHAR(2000) NOT NULL, \
